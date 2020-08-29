@@ -23,13 +23,16 @@ else:
 
 for comment in subreddit.stream.comments():
 	if comment.id not in posts_replied_to:
-		if re.search("maidenbot!", comment.body, re.IGNORECASE):
+		if re.search("knowledgebot!", comment.body, re.IGNORECASE):
 			args = comment.body.split()
-			del args[0]
+			bot_index = args.index("knowledgebot!")
+			del args[:bot_index+1]
+			date_index = [i for i, item in enumerate(args) if re.search(r'(\d+/\d+/\d+)', item)]
+			del args[date_index[0]+1:]
 			date = dt.strptime(args[-1], '%d/%m/%Y')
 			del args[-1]
 			#num_posts = num_posts(date, args)
-			comment.reply("There have been " + str(num_posts(date, args)) + " post(s) that contain the words" + str(args) + "since" + str(date))
+			comment.reply("There have been " + str(num_posts(date, args)) + " post(s) that contain the words " + str(args) + " since " + str(date))
 			print("Bot replying to: ", comment.body)
 			posts_replied_to.append(comment.id)
 		with open("posts_replied_to.txt", "w") as f:
